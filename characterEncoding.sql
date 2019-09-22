@@ -1,5 +1,6 @@
 grant all privileges on  *.* to 'user'@'localhost' WITH GRANT OPTION;
 SHOW GRANTS FOR 'user'@'localhost';
+REVOKE all ON *.* FROM 'user'@'localhost';
 
 ALTER USER 'user_name'@'localhost' identified with mysql_native_password by 'user_password';
 FLUSH privileges;

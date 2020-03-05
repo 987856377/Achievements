@@ -1,9 +1,9 @@
 JAVA_OPTS="
 -server        #服务器模式
--Xmx4g    #JVM最大允许分配的堆内存，按需分配
--Xms4g    #JVM初始分配的堆内存，一般和Xmx配置成一样以避免每次gc后JVM重新分配内存。
+-Xmx4G    #JVM最大允许分配的堆内存，按需分配
+-Xms4G    #JVM初始分配的堆内存，一般和Xmx配置成一样以避免每次gc后JVM重新分配内存。
 -Xmn2G    #年轻代内存大小，整个JVM内存=年轻代 + 年老代 + 持久代 
--Xss512k   #设置每个线程的堆栈大小
+-Xss1M   #设置每个线程的堆栈大小
 -XX:MetaspaceSize=256M    #元空间大小
 -XX:MaxMetaspaceSize=256M #最大元空间大小
 -XX:SurvivorRatio=1   #新生代中 Eden 与 Survivor 的比值。默认值为 8。即 Eden 占新生代空间的 8/10，另外两个 Survivor 各占 1/10,现调节为1:1:1

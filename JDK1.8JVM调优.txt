@@ -2,8 +2,11 @@ JAVA_OPTS="
 -server        #服务器模式
 -Xmx4g    #JVM最大允许分配的堆内存，按需分配
 -Xms4g    #JVM初始分配的堆内存，一般和Xmx配置成一样以避免每次gc后JVM重新分配内存。
--Xmn256m    #年轻代内存大小，整个JVM内存=年轻代 + 年老代 + 持久代 
--Xss512k    #设置每个线程的堆栈大小
+-Xmn2G    #年轻代内存大小，整个JVM内存=年轻代 + 年老代 + 持久代 
+-Xss512k   #设置每个线程的堆栈大小
+-XX:MetaspaceSize=256M    #元空间大小
+-XX:MaxMetaspaceSize=256M #最大元空间大小
+-XX:SurvivorRatio=1   #新生代中 Eden 与 Survivor 的比值。默认值为 8。即 Eden 占新生代空间的 8/10，另外两个 Survivor 各占 1/10,现调节为1:1:1
 -XX:+DisableExplicitGC    #忽略手动调用GC, System.gc()的调用就会变成一个空调用，完全不触发GC
 -XX:+UseConcMarkSweepGC     #并发标记清除（CMS）收集器
 -XX:+CMSParallelRemarkEnabled    #降低标记停顿
@@ -11,30 +14,6 @@ JAVA_OPTS="
 -XX:+UseFastAccessorMethods    #原始类型的快速优化
 -XX:+UseCMSInitiatingOccupancyOnly        #使用手动定义初始化定义开始CMS收集
 -XX:CMSInitiatingOccupancyFraction=70    #使用cms作为垃圾回收使用70％后开始CMS收集
--Ddruid.registerToSysProperty=true
-"
-
-JAVA_OPTS="
--server 
--Xmx4000M
--Xms4000M
--Xmn600M
--XX:PermSize=500M
--XX:MaxPermSize=500M
--Xss256K
--XX:+DisableExplicitGC
--XX:SurvivorRatio=1
--XX:+UseConcMarkSweepGC
--XX:+UseParNewGC
--XX:+CMSParallelRemarkEnabled
--XX:+UseCMSCompactAtFullCollection
--XX:CMSFullGCsBeforeCompaction=0
--XX:+CMSClassUnloadingEnabled
--XX:LargePageSizeInBytes=128M
--XX:+UseFastAccessorMethods
--XX:+UseCMSInitiatingOccupancyOnly 
--XX:CMSInitiatingOccupancyFraction=80
--XX:SoftRefLRUPolicyMSPerMB=0
 -XX:+PrintClassHistogram
 -XX:+PrintGCDetails
 -XX:+PrintGCTimeStamps

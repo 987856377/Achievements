@@ -15,3 +15,7 @@ JAVA_OPTS="
 -XX:+PrintHeapAtGC
 -Xloggc:log/gc.log
 "
+
+Java堆大小设置，Xms 和 Xmx设置为老年代存活对象的3-4倍，即FullGC之后的老年代内存占用的3-4倍
+年轻代Xmn的设置为老年代存活对象的1-1.5倍。
+老年代的内存大小设置为老年代存活对象的2-3倍。

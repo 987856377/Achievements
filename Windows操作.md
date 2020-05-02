@@ -1,4 +1,4 @@
-#WINDOWS命令行关闭本地占用的端口
+# WINDOWS命令行关闭本地占用的端口
 
 查找对应的端口占用的进程: netstat -ano | findstr "8088" 找到占用8080端口对应的程序的PID号 
 

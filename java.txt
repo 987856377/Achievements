@@ -1,0 +1,46 @@
+java虚拟机相关的问题一般多是以下几种问题：gc时间过长、OOM、死锁、线程block、线程数暴涨等问题。
+一般通过以下几个工具都能定位出问题：
+jps        JVM Process Status Tool,用来查看基于HotSpot的JVM里面中，所有具有访问权限的Java进程的具体状态, 包括进程ID，进程启动的路径及启动参数等等，与unix上的ps类似，只不过jps是用来显示java进程，可以把jps理解为ps的一个子集。
+jstat      JVM Statistics Monitoring Tool,jstat是用于监视虚拟各种运行状态信息的命令行工具，它可以显示本地或者远程虚拟机进程中的类装载、内存、垃圾收集、JIT编译等运行数据。
+jinfo      Configuration info for java，命令的作用是实时的查看和调整虚拟机的参数。
+jmap     Memory Map for java，生成虚拟机的内存转储快照(heapdump)
+jhat       JVM Heap Dump Browser，用于分析heapdump文件，它会建立一个Http/HTML服务器，让用户可以在浏览器上查看分析结果
+jstack    Stack Trace for java，显示虚拟机的线程快照。
+
+ 
+常用：
+jps -v
+jstat -gc 118694 500 5 
+jmap -dump:live,format=b,file=dump.hprof 29170
+jmap -heap 29170
+jmap -histo:live 29170 | more
+jmap -permstat 29170
+jstack -l 29170 |more
+
+
+OOM问题
+发生OOM问题一般服务都会crash，业务日志会有OutOfMemoryError。
+OOM一般都是出现了内存泄露，需要查看OOM时候的jvm堆的快照，如果配置了-XX:+HeapDumpOnOutOfMemoryError, 
+在发生OOM的时候会在-XX:HeapDumpPath生成堆的dump文件，结合MAT，可以对dump文件进行分析，查找出发生OOM的原因.
+手动dump堆快照
+jmap -dump:format=b,file=file_name pid 或者kill -3 pid
+
+死锁
+死锁原因是两个或者多个线程相互等待资源，现象一般是出现线程hung住，更严重会出现线程数暴涨，系统出现api alive报警等。查看死锁最好的方法就是分析当时的线程栈。
+jps -v
+jstack -l pid
+
+
+线程block、线程数暴涨
+线程block问题一般是等待io、等待网络、等待监视器锁等造成，可能会导致请求超时、造成造成线程数暴涨导致系统502等。
+如果出现这种问题，主要是关注jstack 出来的BLOCKED、Waiting on condition、Waiting on monitor entry等状态信息。
+jstack -l pid |wc -l
+jstack -l pid |grep "BLOCKED"|wc -l
+jstack -l pid |grep "Waiting on condition"|wc -l
+
+
+显示tcp各个状态数量：
+netstat -ant |awk '{print $6}'|sort|uniq -c
+
+查看连接某服务port最多的的IP地址
+netstat -nat | grep "10.32.45.35:8924" |awk '{print $5}'|awk -F: '{print $4}'|sort|uniq -c|sort -nr|head -10

@@ -15,7 +15,7 @@ jmap -dump:live,format=b,file=dump.hprof 29170
 jmap -heap 29170
 jmap -histo:live 29170 | more
 jmap -permstat 29170
-jstack -l 29170 |more
+jstack -l 29170 | more
 
 
 OOM问题
@@ -34,13 +34,13 @@ jstack -l pid
 线程block、线程数暴涨
 线程block问题一般是等待io、等待网络、等待监视器锁等造成，可能会导致请求超时、造成造成线程数暴涨导致系统502等。
 如果出现这种问题，主要是关注jstack 出来的BLOCKED、Waiting on condition、Waiting on monitor entry等状态信息。
-jstack -l pid |wc -l
-jstack -l pid |grep "BLOCKED"|wc -l
-jstack -l pid |grep "Waiting on condition"|wc -l
+jstack -l pid | wc -l
+jstack -l pid | grep "BLOCKED" | wc -l
+jstack -l pid | grep "Waiting on condition" | wc -l
 
 
 显示tcp各个状态数量：
-netstat -ant |awk '{print $6}'|sort|uniq -c
+netstat -ant | awk '{print $6}' | sort | uniq -c
 
 查看连接某服务port最多的的IP地址
-netstat -nat | grep "10.32.45.35:8924" |awk '{print $5}'|awk -F: '{print $4}'|sort|uniq -c|sort -nr|head -10
+netstat -nat | grep "10.32.45.35:8924" | awk '{print $5}' | awk -F: '{print $4}' | sort | uniq -c | sort -nr | head -10

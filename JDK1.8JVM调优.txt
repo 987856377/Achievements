@@ -1,19 +1,27 @@
 JAVA_OPTS="
--server        #服务器模式
--Xms4G    #JVM初始分配的堆内存，一般和Xmx配置成一样以避免每次gc后JVM重新分配内存。
--Xmx4G    #JVM最大允许分配的堆内存，按需分配
--Xmn2G    #年轻代内存大小，整个JVM内存=年轻代 + 年老代 + 持久代 
--Xss1M   #设置每个线程的堆栈大小
--XX:MetaspaceSize=512M    #元空间大小
--XX:MaxMetaspaceSize=512M #最大元空间大小
--XX:SurvivorRatio=1   #新生代中 Eden 与 Survivor 的比值。默认值为 8。即 Eden 占新生代空间的 8/10，另外两个 Survivor 各占 1/10,现调节为1:1:1
--XX:+DisableExplicitGC    #忽略手动调用GC, System.gc()的调用就会变成一个空调用，完全不触发GC
--XX:+UseG1GC     #G1收集器
+-server                       #服务器模式
+-Xms4G                        #JVM初始分配的堆内存，一般和Xmx配置成一样以避免每次gc后JVM重新分配内存。
+-Xmx4G                        #JVM最大允许分配的堆内存，按需分配
+-Xmn2G                        #年轻代内存大小，整个JVM内存=年轻代 + 年老代 + 持久代 
+-Xss256K                      #设置每个线程的堆栈大小
+
+-XX:MetaspaceSize=512M        #元空间大小
+-XX:MaxMetaspaceSize=512M     # 最大元空间大小
+-XX:SurvivorRatio=1           # 新生代中 Eden 与 Survivor 的比值。默认值为 8。即 Eden 占新生代空间的 8/10，另外两个 Survivor 各占 1/10,现调节为1:1:1
+-XX:+DisableExplicitGC        # 忽略手动调用GC, System.gc()的调用就会变成一个空调用，完全不触发GC
+
+-XX:+UseG1GC                  # G1收集器
+-XX:MaxTenuringThreshold=14   # 提升年老代的最大临界值(tenuring threshold). 默认值为 15[每次GC，增加1岁，到15岁如果还要存活，放入Old区]
+-XX:ParallelGCThreads=8       # 设置垃圾收集器在并行阶段使用的线程数[一般设置为本机CPU线程数相等，即本机同时可以处理的个数，设置过大也没有用]
+-XX:ConcGCThreads=8           # 并发垃圾收集器使用的线程数量
+
 -XX:+PrintClassHistogram
 -XX:+PrintGCDetails
 -XX:+PrintGCTimeStamps
 -XX:+PrintHeapAtGC
 -Xloggc:log/gc.log
+-XX:+HeapDumpOnOutOfMemoryError        # OOM时导出堆到文件
+-XX:HeapDumpPath=./oom.dump        　　 # 导出OOM的路径
 "
 
 Java堆大小设置，Xms 和 Xmx设置为老年代存活对象的3-4倍，即FullGC之后的老年代内存占用的3-4倍

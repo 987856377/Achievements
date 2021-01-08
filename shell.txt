@@ -1,0 +1,193 @@
+#!/bin/bash 
+#! 告诉系统这个脚本需要什么解释器来执行。文件扩展名 .sh 不是强制要求的。
+
+Shell 变量分为系统变量和自定义变量。系统变量有$HOME、$PWD、$USER等，显示当前 Shell 中所有变量：set 
+基本语法
+定义变量：变量名=变量值，等号两侧不能有空格，变量名一般习惯用大写。
+删除变量：unset 变量名 。
+声明静态变量：readonly 变量名，静态变量不能unset。
+使用变量：$变量名
+
+将命令返回值赋给变量（重点）
+A=`ls` 反引号,执行里面的命令
+A=$(ls) 等价于反引号
+
+
+Shell 环境变量
+基本语法
+export 变量名=变量值，将 Shell 变量输出为环境变量。
+source 配置文件路径，让修改后的配置信息立即生效。
+echo $变量名，检查环境变量是否生效
+
+
+位置参数变量
+基本语法
+$n ：$0 代表命令本身、$1-$9 代表第1到9个参数，10以上参数用花括号，如 ${10}。
+$* ：命令行中所有参数，且把所有参数看成一个整体。
+$@ ：命令行中所有参数，且把每个参数区分对待。
+$# ：所有参数个数。
+
+
+预定义变量: 在赋值定义之前，事先在 Shell 脚本中直接引用的变量。
+基本语法
+$$ ：当前进程的 PID 进程号。
+$! ：后台运行的最后一个进程的 PID 进程号。
+$? ：最后一次执行的命令的返回状态，0为执行正确，非0执行失败。
+
+
+运算符
+基本语法
+$((运算式)) 或 $[运算式]
+expr m + n 注意 expr 运算符间要有空格
+expr m - n
+expr \*，/，% 分别代表乘，除，取余
+
+
+条件判断
+	1. [ condition ]  &&   action
+	2. if [ command ];then
+   		action
+	    elif [ command ];then
+   		action
+	    else
+   		action
+	    fi
+	3. case "${str_log_level}" in
+            		1|[Ii][Nn][Ff][Oo])
+                		str_log_level="info"
+                	;;
+            		2|[Ww][Aa][Rr][Nn])
+                		str_log_level="warn"
+               		 ;;
+            		3|[Ee][Rr][Rr][Oo][Rr])
+                		str_log_level="error"
+                	;;
+            		4|[Dd][Ee][Bb][Uu][Gg])
+                		str_log_level="debug"
+                	;;
+            		[eE][xX][iI][tT])
+                		exit 1
+               		 ;;
+            		*)
+                		str_log_level="info"
+               		 ;;
+        	    esac
+
+基本语法
+[ condition ] 注意condition前后要有空格。非空返回0，0为 true，否则为 false 。
+s​h​e​l​l​中​条​件​判​断​i​f​中​的​-​z​到​-​d​的​意​思
+
+文件/文件夹(目录)判断
+[ -b FILE ] 如果 FILE 存在且是一个块特殊文件则为真。
+[ -c FILE ] 如果 FILE 存在且是一个字特殊文件则为真。
+[ -d DIR ] 如果 FILE 存在且是一个目录则为真。
+[ -e FILE ] 如果 FILE 存在则为真。
+[ -f FILE ] 如果 FILE 存在且是一个普通文件则为真。
+[ -g FILE ] 如果 FILE 存在且已经设置了SGID则为真。
+[ -k FILE ] 如果 FILE 存在且已经设置了粘制位则为真。
+[ -p FILE ] 如果 FILE 存在且是一个名字管道(F如果O)则为真。
+[ -r FILE ] 如果 FILE 存在且是可读的则为真。
+[ -s FILE ] 如果 FILE 存在且大小不为0则为真。
+[ -t FD ] 如果文件描述符 FD 打开且指向一个终端则为真。
+[ -u FILE ] 如果 FILE 存在且设置了SUID (set user ID)则为真。
+[ -w FILE ] 如果 FILE存在且是可写的则为真。
+[ -x FILE ] 如果 FILE 存在且是可执行的则为真。
+[ -O FILE ] 如果 FILE 存在且属有效用户ID则为真。
+[ -G FILE ] 如果 FILE 存在且属有效用户组则为真。
+[ -L FILE ] 如果 FILE 存在且是一个符号连接则为真。
+[ -N FILE ] 如果 FILE 存在 and has been mod如果ied since it was last read则为真。
+[ -S FILE ] 如果 FILE 存在且是一个套接字则为真。
+[ FILE1 -nt FILE2 ] 如果 FILE1 has been changed more recently than FILE2, or 如果 FILE1 exists and FILE2 does not则为真。
+[ FILE1 -ot FILE2 ] 如果 FILE1 比 FILE2 要老, 或者 FILE2 存在且 FILE1 不存在则为真。
+[ FILE1 -ef FILE2 ] 如果 FILE1 和 FILE2 指向相同的设备和节点号则为真。
+
+字符串判断
+[ -z STRING ] 如果STRING的长度为零则为真 ，即判断是否为空，空即是真；
+[ -n STRING ] 如果STRING的长度非零则为真 ，即判断是否为非空，非空即是真；
+[ STRING1 = STRING2 ] 如果两个字符串相同则为真 ；
+[ STRING1 != STRING2 ] 如果字符串不相同则为真 ；
+[ STRING1 ]　 如果字符串不为空则为真,与-n类似
+
+数值判断
+INT1 -eq INT2           INT1和INT2两数相等为真 ,=
+INT1 -ne INT2           INT1和INT2两数不等为真 ,<>
+INT1 -gt INT2            INT1大于INT1为真 ,>
+INT1 -ge INT2           INT1大于等于INT2为真,>=
+INT1 -lt INT2             INT1小于INT2为真 ,<</div>
+INT1 -le INT2             INT1小于等于INT2为真,<=
+
+复杂逻辑判断
+-a 与
+-o 或
+! 非
+
+
+读取控制台输入
+基本语法
+read(选项)(参数)
+选项
+	-p：指定读取值时的提示符
+	-t：指定读取值时等待的时间（秒），如果没有在指定时间内输入，就不再等待了。
+参数
+	变量名：读取值的变量名
+
+
+系统函数
+basename，删掉路径最后一个 / 前的所有部分（包括/），常用于获取文件名。
+基本语法
+basename [pathname] [suffix]
+basename [string] [suffix]
+如果指定 suffix，也会删掉pathname或string的后缀部分。
+
+
+自定义函数
+基本语法
+[ function ] funname[()]
+{
+    Action;
+    [return int;]
+}
+
+# 调用
+funname 参数1 参数2...
+	
+
+cat << EOF，以EOF输入字符为标准输入结束
+cat > filename，创建文件，并把标准输入输出到filename文件中，以ctrl+d作为输入结束
+cat > filename << EOF，以EOF作为输入结束，和ctrl+d的作用一样
+在我们使用cat << EOF时，我们输入完成后，需要在一个新的一行输入EOF结束stdin的输入。EOF必须顶行写，前面不能用制表符或者空格。EOF不会被当做结束分界符，只会继续被当做stdin来输入。
+在我们使用cat <<- EOF时，如果EOF前有制表符或者空格，但仍然会被当做结束分界符，表示stdin的结束
+
+cat > /etc/nginx/nginx.conf <<-EOF
+	something...
+EOF
+
+
+设置颜色
+#fonts color
+yellow(){
+    echo -e "\033[33m\033[01m$1\033[0m"
+}
+green(){
+    echo -e "\033[32m\033[01m$1\033[0m"
+}
+red(){
+    echo -e "\033[31m\033[01m$1\033[0m"
+}
+
+
+读取域名
+read domain
+addr=`ping ${domain} -c 1 | sed '1{s/[^(]*(//;s/).*//;q}'`
+
+green "======================="
+yellow "请输入绑定到本VPS的域名"
+green "======================="
+read your_domain
+real_addr=`ping ${your_domain} -c 1 | sed '1{s/[^(]*(//;s/).*//;q}'`
+local_addr=`curl ipv4.icanhazip.com`
+if [ $real_addr == $local_addr ] ; then
+	green "=========================================="
+	green "       域名解析正常，开始安装trojan"
+	green "=========================================="
+	sleep 1s

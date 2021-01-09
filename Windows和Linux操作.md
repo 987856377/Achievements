@@ -11,3 +11,10 @@
 
 打开注册表 计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Command Processor
 新建 -> 字符串值 -> 数据名称 AutoRun -> 数值数据 chcp 65001 >nul 2>&1
+
+# Linux如何关闭某个占用端口的进程
+lsof -i:3306
+kill -9 5891
+
+netstat -nlp | grep :3306 | awk '{print $7}' | awk -F"/" '{ print $1 }' | kill 
+kill `netstat -nlp | grep :3306 | awk '{print $7}' | awk -F"/" '{ print $1 }'` 

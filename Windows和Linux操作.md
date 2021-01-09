@@ -14,7 +14,10 @@
 
 # Linux如何关闭某个占用端口的进程
 lsof -i:3306
+
 kill -9 5891
 
+
 netstat -nlp | grep :3306 | awk '{print $7}' | awk -F"/" '{ print $1 }' | kill 
+
 kill `netstat -nlp | grep :3306 | awk '{print $7}' | awk -F"/" '{ print $1 }'` 

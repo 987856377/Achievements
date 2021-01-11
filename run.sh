@@ -17,16 +17,7 @@ server="192.168.220.128"
 username="root"
 location="/usr/dev/"
 path="/usr"
-
 base_path=$(basename $location)
-
-#read -p "input the server IP to copy from:" server
-#read -p "input the server username to login:" username
-#read -p "input the server resource location copy:" location
-#read -p "input the path to deploy:" path
-
-validInput
-
 
 active=$(systemctl status firewalld | grep -c active)
 [[ $active -ge 1 ]] && yellow "firewall is active"
@@ -67,6 +58,13 @@ function configJDK
 	green "unzip $path/$base_path/$jdk success!"
 
 	green "config PATH start..."
+	
+	ensure=$(tail -n 1 /etc/profile)
+	[[ -n $ensure ]] && cat >> /etc/profile <<- EOF
+		
+		
+	EOF
+	
 	cat >> /etc/profile <<- EOF
 		export JAVA_HOME=$path/$base_path/$(basename $jdk .tar.gz)
 		export PATH=\$PATH:\$JAVA_HOME/bin
@@ -99,8 +97,30 @@ function startZookeeper()
 	fi
 }
 
-function deployAndStartServices()
+function stopZookeeper()
 {
+	if [ ! -e $path/$base_path/$(basename $zk .tar.gz)/bin/zkServer.sh ] ; then
+		red "$path/$base_path/$(basename $zk .tar.gz)/bin/zkServer.sh is not exist!"
+		exit 1
+	fi
+
+	sh $path/$base_path/$(basename $zk .tar.gz)/bin/zkServer.sh stop
+	zkActive=$(ps -ef | grep -c zookeeper)
+	if [ $zkActive -eq 1 ] ; then
+		green "zookeeper stoped success!"
+	else
+		red "zookeeper stoped failure!"
+	fi
+}
+
+function fileTransfer
+{
+	#read -p "input the server IP to copy from:" server
+	#read -p "input the server username to login:" username
+	#read -p "input the server resource location copy:" location
+	#read -p "input the path to deploy:" path
+	
+	validInput
 
 	scp -r $username@$server:$location $path
 
@@ -114,6 +134,11 @@ function deployAndStartServices()
 	else
 		red "$path/$base_path/$zk is not supported!"
 	fi
+}
+
+function deployAndStartServices()
+{
+	fileTransfer
 	
 	configJDK
 
@@ -126,14 +151,30 @@ function startServices()
 	startZookeeper
 }
 
+function stopServices()
+{
+	stopZookeeper
+}
+
+function resetServices()
+{
+	stopServices
+	rm -rf $path/$base_path
+	sed -i '$d' /etc/profile
+	sed -i '$d' /etc/profile
+	source /etc/profile
+}
+
 yellow "###########################################"
-yellow "# 	1.一键安装并启动 		  #"
-yellow "# 	2.一键启动		          #"
-yellow "# 	0.退出				  #"
+yellow "# 	1.Deploy and Start 		  #"
+yellow "# 	2.Start		                  #"
+yellow "# 	3.Stop		                  #"
+yellow "# 	4.Reset		                  #"
+yellow "# 	0.exit				  #"
 yellow "###########################################"
 
-read -p "input the type you want to operate: " type
-case $type in
+read -p "input the type you want to operate: " operateType
+case $operateType in
 	"0")
 		exit 1
 	;;
@@ -142,6 +183,12 @@ case $type in
 	;;
 	"2")
 		startServices
+	;;
+	"3")
+		stopServices
+	;;
+	"4")
+		resetServices
 	;;
 	*)
 		yellow "your commond is not supported!"

@@ -146,6 +146,14 @@ function deployAndStartServices()
 	startZookeeper
 }
 
+function configAndStartServices()
+{
+	configJDK
+
+	tarZookeeper
+	startZookeeper
+}
+
 function startServices()
 {
 	startZookeeper
@@ -167,9 +175,10 @@ function resetServices()
 
 yellow "###########################################"
 yellow "# 	1.Deploy and Start 		  #"
-yellow "# 	2.Start		                  #"
-yellow "# 	3.Stop		                  #"
-yellow "# 	4.Reset		                  #"
+yellow "# 	2.Config and Start 		  #"
+yellow "# 	3.Start		                  #"
+yellow "# 	4.Stop		                  #"
+yellow "# 	5.Reset		                  #"
 yellow "# 	0.exit				  #"
 yellow "###########################################"
 
@@ -182,12 +191,15 @@ case $operateType in
 		deployAndStartServices
 	;;
 	"2")
-		startServices
+		configAndStartServices
 	;;
 	"3")
-		stopServices
+		startServices
 	;;
 	"4")
+		stopServices
+	;;
+	"5")
 		resetServices
 	;;
 	*)

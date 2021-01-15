@@ -1,7 +1,6 @@
-###############################################
-#		arthas usage			   #
-#     下载地址：https://github.com/alibaba/arthas/releases      #
-##############################################
+################################################
+				arthas usage 
+################################################
 
 # 默认情况下json-format为false，如果希望watch/tt等命令结果以json格式输出，则可以设置json-format为true。
 options json-format true
@@ -18,13 +17,17 @@ jad com.springboot.provider.module.his.controller.UserController
 # 反编译class,查看 getById 接口路径，源码
 jad com.springboot.provider.module.his.controller.UserController getById
 
-# 查看 getById 接口的请求  
+# 查看 getById 接口的请求 
 tt -t com.springboot.provider.module.his.controller.UserController getById
 
-# 查看 getById 接口耗时大于 5ms 的请求  
+# 查看 getById 接口耗时大于 5ms 的请求 
 tt -t com.springboot.provider.module.his.controller.UserController getById '#cost > 5'
 
-# 查看 getById 接口耗时大于 5ms 的请求  
+
+# 查看 getById 接口中调用的 耗时较长的方法
+trace com.springboot.provider.module.his.controller.UserController getById
+
+# 查看 getById 接口耗时大于 5ms 的请求 
 trace com.springboot.provider.module.his.controller.UserController getById '#cost > 5'
 
 # 查看 getById 接口请求入参，出参，异常
@@ -32,6 +35,7 @@ watch com.springboot.provider.module.his.controller.UserController getById "{par
 
 # 监控 getById 接口调用统计数据，每隔5秒输出一次
 monitor -c 5 com.springboot.provider.module.his.controller.UserController getById
+
 
 # 查看占用CPU最多的3个线程
 thread -n 3

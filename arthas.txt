@@ -39,3 +39,5 @@ monitor -c 5 com.springboot.provider.module.his.controller.UserController getByI
 
 # 查看占用CPU最多的3个线程
 thread -n 3
+# 找出当前阻塞其他线程的线程
+thread -b

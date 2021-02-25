@@ -49,3 +49,8 @@ SELECT * FROM information_schema.processlist WHERE STATE = 'Sending data';
 -- 生成kill慢进程
 SELECT CONCAT('KILL ',id,';') FROM information_schema.processlist p INNER JOIN information_schema.INNODB_TRX x ON p.id = x.trx_mysql_thread_id WHERE db='test';
 
+-- 自动关闭处于sleep状态的连接
+SHOW GLOBAL VARIABLES LIKE 'wait_timeout';
+SHOW GLOBAL VARIABLES LIKE 'interactive_timeout';
+set global wait_timeout=30;
+SET GLOBAL interactive_timeout=30;

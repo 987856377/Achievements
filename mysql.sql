@@ -52,5 +52,5 @@ SELECT CONCAT('KILL ',id,';') FROM information_schema.processlist p INNER JOIN i
 -- 自动关闭处于sleep状态的连接
 SHOW GLOBAL VARIABLES LIKE 'wait_timeout';
 SHOW GLOBAL VARIABLES LIKE 'interactive_timeout';
-set global wait_timeout=30;
+SET GLOBAL wait_timeout=30;
 SET GLOBAL interactive_timeout=30;

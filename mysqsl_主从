@@ -1,0 +1,66 @@
+环境如下：
+主数据库：MySQL版本5.7，IP为192.168.1.11
+从数据库：MySQL版本5.7，IP为192.168.1.12
+
+一、主数据库配置
+
+1、创建一个新的测试数据库，名称为testdb。
+
+2、打开my.ini，增加配置
+
+复制代码
+# 主从复制
+server-id=1 #设置server-id
+log-bin=mysql-bin #开启二进制文件 
+#同步的数据库，除此之外别的不同步（和下面binlog-ignore-db二选一）
+binlog_do_db=testdb 
+#不同步数据库，除此之外都同步
+#binlog-ignore-db = information_schema 
+#binlog-ignore-db = mysql
+
+3、重启MySQL服务
+
+4、创建用于同步的用户账号
+（1）以管理员身份打开cmd窗口后，运行mysql -uroot -p，输入密码（为空则直接回车），登陆。
+（2）先后执行下面3条命令创立用户（用户名MySlave，密码123456），并刷新权限
+
+	CREATE USER 'slave_192.168.1.12'@'192.168.1.12' IDENTIFIED BY '123456';
+	GRANT REPLICATION SLAVE ON *.* TO 'slave_192.168.1.12'@'192.168.1.12';
+	FLUSH PRIVILEGES;
+
+5、查看Master状态，记录二进制文件名和位置
+	show master status;
+#二进制文件为mysql-bin.000005，位置为154
+
+二、从数据库配置
+
+1、创建一个新的测试数据库，名称为testdb。
+
+2、验证同步账号能否登陆
+		打开Navicat for MySQL，新建链接，IP填写192.168.1.11，用户名slave_192.168.1.12，密码123456，点击“连接测试”验证是否能连接。
+
+3、打开my.ini，增加配置
+
+server-id=2 #设置server-id
+log-bin=mysql-bin #开启二进制文件
+
+4、重启MySQL服务
+
+5、cmd命令行登陆MySQL数据库，执行下面命令进行手动同步
+CHANGE MASTER TO MASTER_HOST='192.168.1.11',MASTER_PORT=3306,MASTER_USER='slave_192.168.1.12',MASTER_PASSWORD='123456',MASTER_LOG_FILE='mysql-bin.000005',MASTER_LOG_POS=154;
+
+6、启动salve同步进程
+	start slave;
+ 
+
+7、查看slave状态
+执行命令：show slave status\G;
+Slave_IO_Running: Yes，Slave_SQL_Running: Yes时说明两个线程已启动，主从复制配置成功。
+
+8、测试
+在主数据库新建一个表，刷新从数据库，可以看到这个表。
+
+
+备注：
+在进行数据库主从复制前，主数据库中已有表和数据，则这部分数据不会同步，需要手动导出，并在从数据库中导入。
+
